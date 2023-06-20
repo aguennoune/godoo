@@ -29,17 +29,6 @@ services:
       - POSTGRES_DB=postgres 
       - PGDATA=/data
     restart: always
-  nginx:
-    container_name: nginx-stack
-    image: nginx:1.17.6-alpine
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx-config:/etc/nginx/conf.d
-    depends_on:
-      - odoo
-    restart: always
 
 volumes:
   odoo-web-data:
