@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b
-	github.com/seborama/govcr v4.5.0+incompatible
 	github.com/spf13/cobra v1.6.1
 )
 
