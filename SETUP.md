@@ -38,7 +38,7 @@ If `curl` is not installed, run `sudo apt-get install curl` (Debian/Ubuntu).
 
 # Curl troubleshooting:
 
-GitHub Copilot: It looks like you are trying to run a `curl` command to download a script from GitHub, but the output you received is not what you expected. The error message you received indicates that the output you received is not a valid shell script, but rather an HTML document.
+Useful GitHub Copilot Collected Suggestions: If it looks like you are trying to run a `curl` command to download a script from GitHub, but the output you received is not what you expected. The error message you may receive, could indicates that the output you received is not a valid shell script, but rather an HTML document, as i encountered seemlessly.
 
 This could be caused by a few different things, such as an incorrect URL or a network issue. To troubleshoot this issue, you can try the following:
 
@@ -89,6 +89,27 @@ sudo chmod -R 777 etc
 sudo chmod -R 777 pgdata
 sudo chmod -R 777 config
 sudo chmod -R 777 godoo
+```
+
+##### Specifying Custom Configuration:
+
+If we run on Linux, we need to ensure that the `postgres` user which has a user ID of `999` has read and write access to the `pgdata` directory. Also, by default, should have access to the configuration files in the `config` directory.
+
+```bash
+sudo chown 999:999 pgdata
+sudo chown 999:999 config/postgresql.conf
+sudo chown 999:999 config/pg_hba.conf
+sudo chown 999:999 config/pg_ident.conf
+sudo chown 999:999 etc/odoo.conf
+sudo chown 999:999 godoo
+```
+
+```{Note}
+The `PGDATA` variable tells PostgreSQL where our data directory is. Similarly, we've presumely learnt that our configuration file also has `data_directory` which tells PostgreSQL the same.
+However, the latter is only read by PostgreSQL after initialization has occured.
+PostgreSQL's initialization phase sets up directory permissions on the data directory.
+If we leave out `PGDATA`, then we will get errors that the data directory is invalid.
+Hence `PGDATA` is required for PostgreSQL to start. That is why it is important here.   
 ```
 
 If you want to start the server with a different port, change `10016` to another value in `docker-compose.yml` inside the parent dir:
@@ -181,3 +202,5 @@ postgres:15
 
 
 Thanks to @minhng92/odoo-16-docker-compose
+Thanks to @llonchj/godoo
+Thanks to @marceldempers/docker-development-youtube-series

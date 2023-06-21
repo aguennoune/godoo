@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
@@ -22,7 +22,7 @@ set -e
 : ${DBFILTER:='.*'}
 
 # Export PATH
-export PWD=$HOME/go/bin/godoo
+export PWD=/usr/local/bin/godoo
 
 # Default values
 : ${URL:="http://localhost:8069"}
