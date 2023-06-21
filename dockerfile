@@ -12,7 +12,11 @@ RUN go build -o godoo
 
 # Runtime stage
 FROM alpine:3.13
-COPY --from=build /godoo/godoo /usr/local/bin/godoo
-COPY run.sh /
-RUN chmod +x /run.sh
-ENTRYPOINT ["./run.sh"]
+COPY --from=build /godoo/godoo $HOME/go/bin/godoo
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x entrypoint.sh
+COPY run.sh ./run.sh
+RUN chmod +x run.sh
+RUN chmod +x $HOME/go/bin/godoo
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["./run.sh"]

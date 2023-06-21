@@ -1,26 +1,46 @@
 version: "3.1"
 
+x-app-defaults: &app-defaults
+  restart: unless-stopped
+  image: godoo/godoo:latest
+  networks:
+    - odoo-net
+
 services:
   odoo:
     user: root
     container_name: odoo-stack
     image: odoo:16.0
     volumes:
+      - ./entrypoint.sh:/entrypoint.sh
       - ./addons-extra:/mnt/addons-extra
-      - ./odoo-config:/etc/odoo
+      - ./etc:/etc/odoo
       - odoo-web-data:/var/lib/odoo
     ports:
-      - 8069:8069
+      - 10016:8069
+      # - 20016:8072 # live chat
+    tty: true
+    command: --
+    environment:
+      - HOST=db 
+      - USER=odoo
+      - PASSWORD=odoo16@2023
+    networks:
+      - odoo-net
     depends_on:
       - db
     restart: always
   db:
     container_name: database-stack
     image: postgres:15.0
+    user: root
+    tty: true
     command: "postgres -c config_file=/config/postgresql.conf"
     volumes:
       - ./pgdata:/data
       - ./config:/config/
+    networks:
+      - odoo-net
     ports:
       - 5432:5432
     environment:
@@ -29,6 +49,21 @@ services:
       - POSTGRES_DB=postgres 
       - PGDATA=/data
     restart: always
+
+  app:
+    <<: *app-defaults
+    container_name: app-stack
+    volumes:
+      - ./godoo:$HOME/go/bin/godoo
+    tty: true
+    command: --
+    depends_on:
+      - db
+    restart: always
+
+networks:
+  odoo-net:
+    driver: bridge
 
 volumes:
   odoo-web-data:
