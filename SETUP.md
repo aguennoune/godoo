@@ -10,7 +10,7 @@ $ docker run -it --rm --name postgres \
 > -v ${PWD}/config:/config \
 > -v ${PWD}/addons-extra:/mnt/addons-extra \
 > -v ${PWD}/etc:/etc/odoo \
-> -v ${PWD}/godoo:$HOME/go/bin/godoo \
+> -v ${PWD}/godoo:/usr/local/bin/godoo \
 > -p 5432:5432 \
 > postgres:15.0 -c 'config_file=/config/postgresql.conf'
 ```
