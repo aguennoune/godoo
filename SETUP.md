@@ -22,12 +22,12 @@ $ docker run -it --rm --name postgres \
 Install docker and docker-compose yourself, then run the following to set up first Odoo instance @`localhost:8069` (default master password: `aguennoune.online`):
 
 ```bash
-curl -s https://github.com/aguennoune/godoo/blob/master/run.sh | sudo bash -s odoo-one 10016 20016
+curl -s https://github.com/aguennoune/godoo/master/run.sh | sudo bash -s odoo-one 10016 20016
 ```
 and/or run the following to set up another Odoo instance @`localhost:8070` (default master password: `aguennoune.online`):
 
 ```bash
-curl -s https://github.com/aguennoune/godoo/blob/master/run.sh | sudo bash -s odoo-two 11016 21016
+curl -s https://github.com/aguennoune/godoo/master/run.sh | sudo bash -s odoo-two 11016 21016
 ```
 Some arguments:
 - First argument(odoo-one): Odoo deploy folder
@@ -35,6 +35,42 @@ Some arguments:
 - Third argument(20016): live chat port
 
 If `curl` is not installed, run `sudo apt-get install curl` (Debian/Ubuntu).
+
+# Curl troubleshooting:
+
+GitHub Copilot: It looks like you are trying to run a `curl` command to download a script from GitHub, but the output you received is not what you expected. The error message you received indicates that the output you received is not a valid shell script, but rather an HTML document.
+
+This could be caused by a few different things, such as an incorrect URL or a network issue. To troubleshoot this issue, you can try the following:
+
+1. Double-check the URL you are using to download the script. Make sure it is correct and that it points to a raw file on GitHub.
+
+2. Check your network connection to ensure that you are able to connect to GitHub. You can try pinging GitHub to see if you are able to reach it.
+
+3. If you are still having issues, you can try downloading the script manually from GitHub and running it locally.
+
+Here are some possible commands that might be helpful:
+
+- Ping: `ping github.com`
+- Download script: `curl -O https://raw.githubusercontent.com/aguennoune/godoo/master/run.sh`
+- Run script: `sudo bash run.sh odoo-one 10016 20016`
+
+Also, troubleshoot the following issue:
+
+GitHub Copilot: It looks like you are encountering a few different issues. Here are some possible solutions:
+
+1. The error message `Could not open requirements file: [Errno 2] No such file or directory: 'odoo-one/requirements.txt'` indicates that the `requirements.txt` file is missing. Make sure that the file exists in the `odoo-one` directory and that the path is correct.
+
+2. The error message `Error response from daemon: pull access denied for godoo/godoo, repository does not exist or may require 'docker login': denied: requested access to the resource is denied` indicates that you do not have permission to access the `godoo/godoo` Docker repository. Make sure that you have the correct credentials and that you are logged in to Docker.
+
+3. The message `Started Odoo @ http://localhost:10016 | Master Password: aguennoune.online | Live chat port: 20016` indicates that the Odoo server has started successfully. You can now access the server by navigating to `http://localhost:10016` in your web browser.
+
+4. The lines `fs.inotify.max_user_watches = 524288` indicate that the `max_user_watches` value needs to be increased. You can do this by running the following command in your terminal: `sudo sysctl -w fs.inotify.max_user_watches=524288`.
+
+Here are some possible commands that might be helpful:
+
+- `docker login` command: https://docs.docker.com/engine/reference/commandline/login/
+- `docker pull` command: https://docs.docker.com/engine/reference/commandline/pull/
+- `sudo sysctl` command: https://linux.die.net/man/8/sysctl
 
 ##### Usage:
 

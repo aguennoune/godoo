@@ -1,10 +1,23 @@
 version: "3.1"
 
 x-app-defaults: &app-defaults
-  restart: unless-stopped
-  image: godoo/godoo:latest
+  image: janekl/godoo:latest
   networks:
     - odoo-net
+  restart: unless-stopped
+
+x-db-defaults: &db-defaults
+  image: postgres:15.0
+  networks:
+    - odoo-net
+  ports:
+    - 5432:5432
+  environment:
+    - POSTGRES_PASSWORD=odoo16@2023
+    - POSTGRES_USER=odoo
+    - POSTGRES_DB=postgres 
+    - PGDATA=/data
+  restart: unless-stopped
 
 services:
   odoo:
@@ -31,28 +44,21 @@ services:
       - db
     restart: always
   db:
-    container_name: database-stack
-    image: postgres:15.0
+    <<: *db-defaults
+    container_name: db-stack
     user: root
     tty: true
     command: "postgres -c config_file=/config/postgresql.conf"
     volumes:
       - ./pgdata:/data
       - ./config:/config/
-    networks:
-      - odoo-net
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_PASSWORD=odoo16@2023
-      - POSTGRES_USER=odoo
-      - POSTGRES_DB=postgres 
-      - PGDATA=/data
-    restart: always
+      - type: volume 
+        source: odoo-web-data
+        target: /data
 
   app:
     <<: *app-defaults
-    container_name: app-stack
+    container_name: godoo-stack
     volumes:
       - ./godoo:$HOME/go/bin/godoo
     tty: true

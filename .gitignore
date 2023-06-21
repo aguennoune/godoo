@@ -1,3 +1,8 @@
 generator/static.go
-pgdata
+pgdata/
 .env
+nginx-config/
+etc/odoo-server.log
+etc/addons/
+etc/sessions/
+etc/filestore/
