@@ -20,4 +20,3 @@ RUN chmod +x /run.sh
 RUN chmod +x /usr/local/bin/godoo
 RUN apk add --no-cache python3 py3-pip
 ENTRYPOINT ["./entrypoint.sh", "run.sh"]
-CMD ["./godoo"]
