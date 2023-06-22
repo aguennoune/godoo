@@ -9,26 +9,26 @@ set -e
 : ${USER:=${DB_ENV_POSTGRES_USER:=${POSTGRES_USER:='odoo'}}}
 : ${PASSWORD:=${DB_ENV_POSTGRES_PASSWORD:=${POSTGRES_PASSWORD:='odoo'}}}
 
-# set default values for godoo config file
-: ${CONFIG:='/etc/odoo/odoo.conf'}
-: ${ADDONS_PATH:='/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons'}
-: ${DATA_DIR:='/var/lib/odoo'}
-: ${LOG_LEVEL:='info'}
-: ${DB_MAXCONN:='64'}
-: ${LIMIT_TIME_CPU:='600'}
-: ${LIMIT_TIME_REAL:='1200'}
-: ${LIMIT_MEMORY_HARD:='2684354560'}
-: ${LIMIT_MEMORY_SOFT:='2147483648'}
-: ${DBFILTER:='.*'}
+# # set default values for godoo config file
+# : ${CONFIG:='/etc/odoo/odoo.conf'}
+# : ${ADDONS_PATH:='/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons'}
+# : ${DATA_DIR:='/var/lib/odoo'}
+# : ${LOG_LEVEL:='info'}
+# : ${DB_MAXCONN:='64'}
+# : ${LIMIT_TIME_CPU:='600'}
+# : ${LIMIT_TIME_REAL:='1200'}
+# : ${LIMIT_MEMORY_HARD:='2684354560'}
+# : ${LIMIT_MEMORY_SOFT:='2147483648'}
+# : ${DBFILTER:='.*'}
 
-# Export PATH
-export PWD=/usr/local/bin/godoo
+# # Export PATH
+# export PWD=/usr/local/bin/godoo
 
-# Default values
-: ${URL:="http://localhost:8069"}
-: ${DATABASE:="odoo"}
-: ${USERNAME:="admin"}
-: ${PASSWORD:="admin"}
+# # Default values
+# : ${URL:="http://localhost:8069"}
+# : ${DATABASE:="odoo"}
+# : ${USERNAME:="admin"}
+# : ${PASSWORD:="admin"}
 
 # install python packages
 pip3 install pip --upgrade
@@ -69,49 +69,49 @@ case "$1" in
         exec "$@"
 esac
 
-# Parse command line options
+# # Parse command line options
 
-OPTARG=()
-function getopts() {
-    param="$4"
-}
-getopts "u" "$URL"
-getopts "d" "$DATABASE"
-getopts "n" "$USERNAME"
-getopts "p" "$PASSWORD"
+# OPTARG=()
+# function getopts() {
+#     param="$4"
+# }
+# getopts "u" "$URL"
+# getopts "d" "$DATABASE"
+# getopts "n" "$USERNAME"
+# getopts "p" "$PASSWORD"
 
-case "$4" in
-    -- | godoo)
-        exec godoo "$@"
-        ;;
-    -*)
-        exec godoo "$@"
-        ;;
-    *)
-        exec "$@"
-esac
+# case "$4" in
+#     -- | godoo)
+#         exec godoo "$@"
+#         ;;
+#     -*)
+#         exec godoo "$@"
+#         ;;
+#     *)
+#         exec "$@"
+# esac
 
-while getopts ":u:d:n:p:" opt; do
-    case $opt in
-        u)
-        URL=$OPTARG
-        ;;
-        d)
-        DATABASE=$OPTARG
-        ;;
-        n)
-        USERNAME=$OPTARG
-        ;;
-        p)
-        PASSWORD=$OPTARG
-        ;;
-        \?)
-        echo "Invalid option: -$OPTARG" >&2
-        exit 1
-        ;;
-        :)
-    esac
-done
+# while getopts ":u:d:n:p:" opt; do
+#     case $opt in
+#         u)
+#         URL=$OPTARG
+#         ;;
+#         d)
+#         DATABASE=$OPTARG
+#         ;;
+#         n)
+#         USERNAME=$OPTARG
+#         ;;
+#         p)
+#         PASSWORD=$OPTARG
+#         ;;
+#         \?)
+#         echo "Invalid option: -$OPTARG" >&2
+#         exit 1
+#         ;;
+#         :)
+#     esac
+# done
 
 
 
