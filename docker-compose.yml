@@ -60,7 +60,7 @@ services:
     <<: *app-defaults
     container_name: godoo-stack
     volumes:
-      - ./godoo:$HOME/go/bin/godoo
+      - ./godoo:/usr/local/bin/godoo
     tty: true
     command: --
     depends_on:
