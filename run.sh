@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Set environment variables
 export DESTINATION=$1
@@ -17,16 +17,17 @@ chmod -R 777 $PWD
 
 # Install dependencies
 apt-get update
-apt-get install -y git python3-pip
+apt-get install -y git python3-pip sudo
 pip3 install -r $DESTINATION/requirements.txt
 
 # Configure container
-if grep -qF "fs.inotify.max_user_watches" /etc/sysctl.conf; then echo $(grep -F "fs.inotify.max_user_watches" /etc/sysctl.conf); else echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.conf; fi
+if grep -qF "fs.inotify.max_user_watches" /etc/sysctl.conf; then echo $(grep -F "fs.inotify.max_user_watches" /etc/sysctl.conf); else echo "fs.inotify.max_user_watches = 524288" | tee -a /etc/sysctl.conf; fi
 sysctl -p
 sed -i 's/10016/'$PORT'/g' $DESTINATION/docker-compose.yml
 sed -i 's/20016/'$CHAT'/g' $DESTINATION/docker-compose.yml
 
 # Run Odoo
+command -v docker-compose >/dev/null 2>&1 || { echo >&2 "docker-compose is required but it's not installed. Aborting."; exit 1; }
 docker-compose -f $DESTINATION/docker-compose.yml up -d
 
 echo 'Started Odoo @ http://localhost:'$PORT' | Master Password: aguennoune.online | Live chat port: '$CHAT
