@@ -23,10 +23,16 @@ The `-h` or `--help` flag can be used with any command to get more information a
 
 To use the `godoo` tool to manage Odoo models, you can use the `add` and `update` commands.
 
+First, you may need to check the Odoo version of the server. You can use the `server-version` command to get the version of the Odoo server. Here's an example usage:
+
+```bash
+godoo server-version --uri=<odoo_url>
+```
+
 The `add` command is used to add a new Odoo model to the environment. Here's an example usage:
 
 ```bash
-godoo add --model=<model_name> --uri=<odoo_url> --database=<database_name> --username=<username> --password=<password>
+godoo add all --package=<model_name> --uri=<odoo_url> -d=<database_name> -u=<username> -p=<password>
 ```
 
 This command adds a new Odoo model with the specified name to the environment. You need to provide the URL of the Odoo server, the name of the database, and the credentials of a user with sufficient permissions to access the model.
@@ -34,7 +40,7 @@ This command adds a new Odoo model with the specified name to the environment. Y
 The `update` command is used to update an existing Odoo model in the environment. Here's an example usage:
 
 ```bash
-godoo update --model=<model_name> --uri=<odoo_url> --database=<database_name> --username=<username> --password=<password>
+godoo update all --package=<model_name> --uri=<odoo_url> -d=<database_name> -u=<username> -p=<password>
 ```
 
 This command updates the existing Odoo model with the specified name in the environment. You need to provide the URL of the Odoo server, the name of the database, and the credentials of a user with sufficient permissions to access the model.
@@ -48,7 +54,7 @@ The `install-language` command in the `godoo` tool is used to install language p
 Here's an example usage:
 
 ```bash
-godoo install-language --uri=<odoo_url> --database=<database_name> --username=<username> --password=<password> <language_code>
+godoo install-language fr_FR --uri=<odoo_url> --database=<database_name> --username=<username> --password=<password>
 ```
 
 This command installs the language pack for the specified language code in the Odoo instance. You need to provide the URL of the Odoo server, the name of the database, and the credentials of a user with sufficient permissions to install language packs.

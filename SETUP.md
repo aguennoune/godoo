@@ -84,7 +84,7 @@ Then open `localhost:8069` in your browser to access Odoo 16.0.
 - If you get any permission issues, change the folder permission to make sure that the container is able to access the directory:
 
 ```bash
-sudo chmod -R 777 addons
+sudo chmod -R 777 addons-extra
 sudo chmod -R 777 etc
 sudo chmod -R 777 pgdata
 sudo chmod -R 777 config
@@ -100,6 +100,7 @@ sudo chown 999:999 pgdata
 sudo chown 999:999 config/postgresql.conf
 sudo chown 999:999 config/pg_hba.conf
 sudo chown 999:999 config/pg_ident.conf
+sudo chown 999:999 etc/requirements.txt
 sudo chown 999:999 etc/odoo.conf
 sudo chown 999:999 godoo
 ```

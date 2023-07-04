@@ -1,7 +1,15 @@
-version: "3.1"
+version: "3.4"
 
 x-app-defaults: &app-defaults
-  image: janekl/godoo:latest
+  # image: janekl/godoo:latest
+  build:
+    context: .
+    dockerfile: dockerfile
+  environment:
+    - URI=http://localhost:10016
+    - DATABASE=odoo
+    - USERNAME=admin
+    - PASSWORD=admin
   networks:
     - odoo-net
   restart: unless-stopped
@@ -47,6 +55,8 @@ services:
     <<: *db-defaults
     container_name: db-stack
     user: root
+    networks:
+      - odoo-net
     tty: true
     command: "postgres -c config_file=/config/postgresql.conf"
     volumes:
@@ -61,6 +71,8 @@ services:
     container_name: godoo-stack
     volumes:
       - ./godoo:/usr/local/bin/godoo
+    networks:
+      - odoo-net
     tty: true
     command: --
     depends_on:

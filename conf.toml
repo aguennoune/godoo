@@ -1,0 +1,14 @@
+[app]
+name="godoo"
+args=[
+    "--uri", "http://localhost:8069",
+    "--database", "odoo",
+    "--username", "admin",
+    "--password", "admin",
+]
+
+[db]
+name="postgres"
+args=[
+    "--uri", "postgresql://postgres:postgres@localhost:5432/postgres",
+]
