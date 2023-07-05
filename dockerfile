@@ -5,7 +5,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     sudo \
     procps \
-    procps-ng
+    procps-ng \
+    curl
 
 # Create `/etc/sysctl.conf` file
 RUN echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.conf
@@ -122,20 +123,27 @@ USER odoo
 # Runtime stage
 FROM tiangolo/uvicorn-gunicorn:python3.8-slim as runtime
 
-# Set the working directory
-WORKDIR /godoo/odoo
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry 
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 && \
-    cd /usr/local/bin && \
-    ln -s /etc/poetry/bin/poetry && \
+# Set the working directory
+WORKDIR /app 
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python3 && \
+    ln -s /opt/poetry/bin/poetry /usr/local/bin/poetry && \
     poetry config virtualenvs.create false
 
 # Copy poetry.lock* in case it doesn't exist in the repo
-COPY ./odoo/pyproject.toml ./odoo/poetry.lock* /odoo/
+COPY pyproject.toml poetry.lock* ./
 
-# Install dependencies
-RUN poetry install --no-dev
+# Install project dependencies
+RUN poetry install --no-root --no-dev
+
+# Copy the project code into the container
+COPY . .
 
 # Copy the Godoo configuration file
 COPY conf.toml /usr/local/bin/conf.toml
@@ -156,4 +164,4 @@ ENV GODOO_CONFIG=/usr/local/bin/conf.toml
 
 # Start the Godoo application
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["odoo", "/run.sh"]
+CMD ["python", "app.py", "odoo", "/run.sh"]
