@@ -80,7 +80,7 @@ esac
 source "$(poetry env info --path)/bin/activate"
 
 # Start odoo
-exec odoo "$@"
+exec app.py "$@"
 
 # Export GODOO_CONFIG variable
 export GODOO_CONFIG=/usr/local/bin/conf.toml
