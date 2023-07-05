@@ -32,6 +32,8 @@ RUN go build -o /odoo/godoo
 
 FROM debian:bullseye-slim as odoo
 
+WORKDIR /godoo
+
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
 # Generate locale C.UTF-8 for postgres and general locale data
@@ -97,6 +99,8 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
     && rm -rf /var/lib/apt/lists/* odoo.deb
 
 # Copy entrypoint script and Odoo configuration file
+# COPY ./etc/requirements.txt /etc/odoo/requirements.txt
+# RUN pip3 install -r /etc/odoo/requirements.txt
 COPY ./entrypoint.sh /
 COPY ./odoo.conf /etc/odoo/
 
@@ -121,16 +125,28 @@ USER odoo
 FROM tiangolo/uvicorn-gunicorn:python3.8-slim as runtime
 
 # Set the working directory
-WORKDIR /godoo
+WORKDIR /godoo/odoo
+
+# Install Poetry 
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 && \
+    cd /usr/local/bin && \
+    ln -s /etc/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
+
+# Copy poetry.lock* in case it doesn't exist in the repo
+COPY ./odoo/pyproject.toml ./odoo/poetry.lock* /odoo/
+
+# Install dependencies
+RUN poetry install --no-dev
 
 # Copy the Godoo configuration file
 COPY conf.toml /usr/local/bin/conf.toml
 RUN chmod +x /usr/local/bin/conf.toml
 
 # Copy the entrypoint and run scripts
-COPY entrypoint.sh /
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-COPY run.sh /
+COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 # Copy the Godoo binary from the build stage

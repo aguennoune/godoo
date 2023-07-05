@@ -41,7 +41,7 @@ export PWD=/usr/local/bin/godoo
 
 # Install python packages
 pip3 install pip --upgrade
-pip3 install -r requirements.txt
+# pip3 install -r /etc/requirements.txt
 
 DB_ARGS=()
 function check_config() {
@@ -75,6 +75,12 @@ case "$1" in
     *)
         exec "$@"
 esac
+
+# Activate virtual environment
+source "$(poetry env info --path)/bin/activate"
+
+# Start odoo
+exec odoo "$@"
 
 # Export GODOO_CONFIG variable
 export GODOO_CONFIG=/usr/local/bin/conf.toml
