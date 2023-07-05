@@ -41,7 +41,7 @@ export PWD=/usr/local/bin/godoo
 
 # Install python packages
 pip3 install pip --upgrade
-# pip3 install -r /etc/requirements.txt
+pip3 install -r requirements.txt
 
 DB_ARGS=()
 function check_config() {
