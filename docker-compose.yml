@@ -2,9 +2,6 @@ version: "3.4"
 
 x-app-defaults: &app-defaults
   image: aguennoune/godoo:16.0
-  build:
-    context: .
-    dockerfile: dockerfile
   environment:
     - URI=http://localhost:10016
     - DATABASE=odoo
@@ -33,7 +30,7 @@ services:
     container_name: odoo-stack
     image: odoo:16.0
     volumes:
-      - ./entrypoint.sh:/entrypoint.sh
+      # - ./entrypoint.sh:/entrypoint.sh
       - ./addons-extra:/mnt/addons-extra
       - ./etc:/etc/odoo
       - odoo-web-data:/var/lib/odoo
