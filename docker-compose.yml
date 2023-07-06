@@ -1,17 +1,21 @@
 version: "3.4"
 
 x-app-defaults: &app-defaults
-  image: aguennoune/godoo:16.0
+  user: root
+  image: aguennoune/godoo:1.20
   environment:
     - URI=http://localhost:10016
     - DATABASE=odoo
     - USERNAME=admin
     - PASSWORD=admin
+    # - GODOO_CONFIG=/usr/local/bin/conf.toml
+    # - GODOO_PARAMS=--workers=4 --limit-time-real=600
   networks:
     - odoo-net
   restart: unless-stopped
 
 x-db-defaults: &db-defaults
+  user: root
   image: postgres:15.0
   networks:
     - odoo-net
@@ -30,19 +34,22 @@ services:
     container_name: odoo-stack
     image: odoo:16.0
     volumes:
-      # - ./entrypoint.sh:/entrypoint.sh
+      - ./entrypoint.sh:/entrypoint.sh
       - ./addons-extra:/mnt/addons-extra
       - ./etc:/etc/odoo
+      - ./godoo:/usr/local/bin/godoo
       - odoo-web-data:/var/lib/odoo
     ports:
-      - 10016:8069
-      # - 20016:8072 # live chat
+      - 8069:8069
     tty: true
     command: --
+    # command: ["godoo.py", "run"]
     environment:
       - HOST=db 
       - USER=odoo
       - PASSWORD=odoo16@2023
+      - GODOO_CONFIG=/usr/local/bin/conf.toml
+      - GODOO_PARAMS=--workers=4 --limit-time-real=600
     networks:
       - odoo-net
     depends_on:
@@ -50,8 +57,8 @@ services:
     restart: always
   db:
     <<: *db-defaults
-    container_name: db-stack
     user: root
+    container_name: db-stack
     networks:
       - odoo-net
     tty: true
@@ -65,13 +72,14 @@ services:
 
   app:
     <<: *app-defaults
+    user: root
     container_name: godoo-stack
     volumes:
       - ./godoo:/usr/local/bin/godoo
     networks:
       - odoo-net
     tty: true
-    command: --
+    command: ["godoo", "cli"]
     depends_on:
       - db
     restart: always

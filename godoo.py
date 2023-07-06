@@ -1,10 +1,10 @@
 import typer
 
-app = typer.Typer()
+godoo = typer.Typer()
 
-@app.command()
+@godoo.command()
 def hello(name: str):
     typer.echo(f"Hello, {name}!")
 
 if __name__ == "__main__":
-    app()
+    godoo()
