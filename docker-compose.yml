@@ -2,17 +2,15 @@ version: "3.4"
 
 x-app-defaults: &app-defaults
   user: root
-  image: aguennoune/godoo:1.20
+  image: aguennoune/godoo:1.21-alpine
   environment:
-    - URI=http://localhost:10016
+    - URI=http://localhost:8069
     - DATABASE=odoo
     - USERNAME=admin
     - PASSWORD=admin
-    # - GODOO_CONFIG=/usr/local/bin/conf.toml
-    # - GODOO_PARAMS=--workers=4 --limit-time-real=600
   networks:
     - odoo-net
-  restart: unless-stopped
+  restart: always
 
 x-db-defaults: &db-defaults
   user: root
@@ -23,10 +21,10 @@ x-db-defaults: &db-defaults
     - 5432:5432
   environment:
     - POSTGRES_PASSWORD=odoo16@2023
-    - POSTGRES_USER=odoo
-    - POSTGRES_DB=postgres 
+    - POSTGRES_USER=godoo_user
+    - POSTGRES_DB=mx_golang_odoo_db 
     - PGDATA=/data
-  restart: unless-stopped
+  restart: always
 
 services:
   odoo:
@@ -34,22 +32,18 @@ services:
     container_name: odoo-stack
     image: odoo:16.0
     volumes:
-      - ./entrypoint.sh:/entrypoint.sh
       - ./addons-extra:/mnt/addons-extra
-      - ./etc:/etc/odoo
-      - ./godoo:/usr/local/bin/godoo
+      - ./config:/config
+      - ./godoo:/godoo
       - odoo-web-data:/var/lib/odoo
     ports:
       - 8069:8069
     tty: true
-    command: --
-    # command: ["godoo.py", "run"]
+    command: [sh, -c, "odoo", "-i", "base", "--db_host", "db", "--db_port", "5432", "--db_user", "godoo_user", "--db_password", "odoo16@2023", "--db_name", "mx_golang_odoo_db", "--db-filter", "mx_golang_odoo_db", "--addons-path", "/mnt/addons-extra,/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/godoo"]
     environment:
       - HOST=db 
-      - USER=odoo
+      - USER=godoo_user
       - PASSWORD=odoo16@2023
-      - GODOO_CONFIG=/usr/local/bin/conf.toml
-      - GODOO_PARAMS=--workers=4 --limit-time-real=600
     networks:
       - odoo-net
     depends_on:
@@ -74,12 +68,10 @@ services:
     <<: *app-defaults
     user: root
     container_name: godoo-stack
-    volumes:
-      - ./godoo:/usr/local/bin/godoo
     networks:
       - odoo-net
     tty: true
-    command: ["godoo", "cli"]
+    command: [sh, -c, "godoo", "--help"]
     depends_on:
       - db
     restart: always
