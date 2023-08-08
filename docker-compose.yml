@@ -2,10 +2,14 @@ version: "3.4"
 
 x-app-defaults: &app-defaults
   user: root
-  image: aguennoune/godoo:1.21-alpine
+  # docker run -it -v ${PWD}:/go/src/github.com/llonchj/godoo aguennoune/godoo:1.16 sh
+  image: aguennoune/godoo:1.16
+  build:
+    context: .
+    target: runtime
   environment:
-    - URI=http://localhost:8069
-    - DATABASE=odoo
+    - URI=http://localhost:8070
+    - DATABASE=mx_golang_odoo_db
     - USERNAME=admin
     - PASSWORD=admin
   networks:
@@ -37,9 +41,9 @@ services:
       - ./godoo:/godoo
       - odoo-web-data:/var/lib/odoo
     ports:
-      - 8069:8069
-    tty: true
-    command: [sh, -c, "odoo", "-i", "base", "--db_host", "db", "--db_port", "5432", "--db_user", "godoo_user", "--db_password", "odoo16@2023", "--db_name", "mx_golang_odoo_db", "--db-filter", "mx_golang_odoo_db", "--addons-path", "/mnt/addons-extra,/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/godoo"]
+      - 8070:8069
+    # tty: true
+    # command: [sh, -c, "odoo", "-i", "base", "--db_host", "db", "--db_port", "5432", "--db_user", "godoo_user", "--db_password", "odoo16@2023", "--db_name", "mx_golang_odoo_db", "--db-filter", "mx_golang_odoo_db", "--addons-path", "/mnt/addons-extra,/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/godoo"]
     environment:
       - HOST=db 
       - USER=godoo_user
@@ -60,6 +64,7 @@ services:
     volumes:
       - ./pgdata:/data
       - ./config:/config/
+      - ./godoo:/godoo
       - type: volume 
         source: odoo-web-data
         target: /data
@@ -68,10 +73,13 @@ services:
     <<: *app-defaults
     user: root
     container_name: godoo-stack
+    volumes:
+      - ./test_project:/go/src/github.com/llonchj/godoo
     networks:
       - odoo-net
-    tty: true
-    command: [sh, -c, "godoo", "--help"]
+    # tty: true
+    # # command: --
+    # command: ["/dlv.sh"]
     depends_on:
       - db
     restart: always
